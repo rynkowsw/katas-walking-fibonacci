@@ -1,44 +1,52 @@
 package com.rynkowsw.fibonacci;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Iterator;
 
 /**
- * Created by wojciech on 24.05.17.
+ * Created by wojciech on 11.06.17.
  */
-public class Fibonacci implements Iterator<BigInteger> {
-    private int index = 0;
+public class Fibonacci {
 
-    private final BigInteger firstValue = BigInteger.ZERO, secondValue = BigInteger.valueOf(1);
+    public static String FIBONACCI_PAIR_INVALID_ARGUMENT = "Fibonacci pair contains null arguments";
 
-    private BigInteger a= firstValue, b = secondValue;
+    public static String FIBONACCI_FOR_NEGATIVE_NUMBER_EXCEPTION = "Fibonacci can not be calculated for negative number";
 
-    public BigInteger next(){
+    public static FibonacciPair calculateNextFibonacci(FibonacciPair fibonacciState)
+    {
+        BigInteger n_1IteratorValue = fibonacciState.getN_1IteratorValue(),
+                nIteratorValue = fibonacciState.getNIteratorValue();
 
-        BigInteger result;
+        if( nIteratorValue == null || n_1IteratorValue == null)
+            throw new RuntimeException(FIBONACCI_PAIR_INVALID_ARGUMENT);
 
-        switch (index){
-            case 0:
-                result = firstValue;
-                break;
-            case 1:
-                result = secondValue;
-                break;
+        return new FibonacciPair(
+                nIteratorValue,
+                nIteratorValue.add(n_1IteratorValue)
+        );
+    }
 
-            default:
-                result = a.add(b);
-                a = b ;
-                b = result;
-                break;
+
+    public static BigInteger fibonacci(int number)
+    {
+        if ( number < 0 ) {
+            throw new RuntimeException(FIBONACCI_FOR_NEGATIVE_NUMBER_EXCEPTION);
+        } else if ( number == 0 ) {
+            return BigInteger.ZERO;
         }
-        index ++;
+        else if ( number == 1 ){
+            return BigInteger.ONE;
+        }
 
-        return new BigInteger(result.toString());
+        FibonacciPair fibonacciPair = new FibonacciPair( BigInteger.ZERO, BigInteger.ONE) ;
+
+        for (int i = 1; i < number ; i++) {
+            fibonacciPair = calculateNextFibonacci(fibonacciPair);
+        }
+
+        return fibonacciPair.getNIteratorValue();
     }
 
-    @Override
-    public boolean hasNext() {
-        return true;
-    }
+
+
+
 }

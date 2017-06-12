@@ -8,14 +8,18 @@ import java.util.stream.Stream;
  */
 public class StreamFibonacci {
 
-    private Fibonacci fibonacci;
+    private FibonacciIterator fibonacciIterator;
+
+    public StreamFibonacci( FibonacciIterator fibonacciIterator){
+        this.fibonacciIterator = fibonacciIterator;
+    }
 
     public StreamFibonacci(){
-        fibonacci = new Fibonacci();
+        fibonacciIterator = new FibonacciIterator();
     }
     
     public Stream<BigInteger> getFibonnaciStream(){
-        return StreamUtils.asStream(fibonacci);
+        return StreamUtils.asStream(fibonacciIterator);
     }
 
 }
