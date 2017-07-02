@@ -3,28 +3,34 @@ package com.rynkowsw.fibonacci;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import static com.rynkowsw.fibonacci.Fibonacci.calculateNextFibonacci;
-
 /**
  * Created by wojciech on 24.05.17.
  */
 public class FibonacciIterator implements Iterator<BigInteger> {
 
-    private FibonacciPair iteratorState;
+    private FibonacciState iteratorState;
+
+    public FibonacciIterator(){
+        this.iteratorState = new FibonacciState();
+    }
+
+    public FibonacciIterator(FibonacciState iteratorState){
+        this.iteratorState = iteratorState;
+    }
+
+    public FibonacciState getFibonacciState(){
+        return iteratorState;
+    }
 
     public BigInteger next(){
 
-        if(iteratorState == null || iteratorState.getN_1IteratorValue() == null) {
-            iteratorState = new FibonacciPair(BigInteger.ZERO, null);
-            return BigInteger.ZERO;
-        } else if(iteratorState.getNIteratorValue() == null){
-            iteratorState = new FibonacciPair(BigInteger.ZERO, BigInteger.ONE);
-            return BigInteger.ONE;
+        if(iteratorState != null ){
+            iteratorState =  ( iteratorState.getNextFibonaciState() ) ;
+        }  else {
+            iteratorState = FibonacciState.FIRST_ELEMENT;
         }
+        return iteratorState.fibonacciValue();
 
-        iteratorState = calculateNextFibonacci(iteratorState);
-
-        return iteratorState.getCurrentFibonacciNumber();
     }
 
     @Override

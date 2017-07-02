@@ -7,8 +7,6 @@ import spock.lang.Specification
  */
 class FibonacciIteratorTest extends Specification {
 
-    private final ANY_NUMBER = 1010
-
     def 'fibonacci iterator first value is zero' () {
         given:
             FibonacciIterator iterator = new FibonacciIterator()
@@ -22,29 +20,78 @@ class FibonacciIteratorTest extends Specification {
         given:
             FibonacciIterator iterator = new FibonacciIterator()
         when: 'getting second element'
-            BigInteger iteratorFibonacciNumber = ++iterator.next()
+            BigInteger firstElement = iterator.next(),
+                       secondElement = iterator.next()
         then:
-            iteratorFibonacciNumber == BigInteger.ONE
+            secondElement == BigInteger.ONE
     }
 
-    def 'n fibonacci iterator value is equal to sum of n-1 and n-2 values' () {
+
+    def 'new fibonacci iterator state has initial state' () {
         given:
             FibonacciIterator iterator = new FibonacciIterator()
-            BigInteger nMinus2, nMinus1, n
-            skipNValues(iterator, ANY_NUMBER )
-        when:
-            nMinus2 = iterator.next()
-            nMinus1 = iterator.next()
-            n = iterator.next()
+        when: 'getting first element'
+            FibonacciState fibonacciState = iterator.getFibonacciState()
         then:
-            n == nMinus2.add(nMinus1)
+            fibonacciState.fibonacciValue() == null
+        and:
+            fibonacciState.previousFibonacciValue() == null
     }
 
 
-    private static void skipNValues(Iterator iterator, int numberOfSkippedValues)
-    {
-        for (int i = 0; i < numberOfSkippedValues ; i++) {
-            iterator.next()
-        }
+    def 'fibonacci state after getting first element has defined first element' () {
+        given:
+            FibonacciIterator iterator = new FibonacciIterator()
+        when: 'getting first element'
+            iterator.next();
+            FibonacciState fibonacciState = iterator.getFibonacciState()
+        then:
+            fibonacciState.fibonacciValue() == BigInteger.ZERO
+        and:
+            fibonacciState.previousFibonacciValue() == null
     }
+
+
+    def 'fibonacci state after getting second element will has always defined actual and previous fibonacci value' () {
+        given:
+            FibonacciIterator iterator = new FibonacciIterator()
+        when: 'getting second element'
+            iterator.next();
+            iterator.next();
+            FibonacciState fibonacciStateAfterSecondValue = iterator.getFibonacciState()
+        then:
+            fibonacciStateAfterSecondValue.fibonacciValue() == BigInteger.ONE
+        and:
+            fibonacciStateAfterSecondValue.previousFibonacciValue() == BigInteger.ZERO
+    }
+
+
+    def 'Iterator use state to create next fibonacci state' (){
+        given:
+            FibonacciState fibonacciCalculatedStateMock = Mock(FibonacciState.class){
+                fibonacciValue() >> new BigInteger(111111111111)
+            }
+
+            FibonacciState fibonacciInitialStateMock = Spy(FibonacciState.class){
+                previousFibonacciValue() >> BigInteger.ZERO
+                fibonacciValue() >> BigInteger.ONE
+            }
+
+            FibonacciIterator iteratorWithMocks = new FibonacciIterator(fibonacciInitialStateMock)
+        when:
+            iteratorWithMocks.next()
+        then:
+            1 * fibonacciInitialStateMock.getNextFibonaciState() >> fibonacciCalculatedStateMock
+            1 * fibonacciCalculatedStateMock.fibonacciValue()
+    }
+
+    def 'When iterator state is not initialized, then new state is initialized and first fibonacci value is returned' (){
+        given:
+            FibonacciIterator iteratorWithMocks = new FibonacciIterator(null)
+        when: ' getting next fibonacci for null state'
+            BigInteger fibonacciValue = iteratorWithMocks.next()
+        then: 'returned first fibonacci value'
+            (fibonacciValue.toString()).equals(FibonacciState.FIRST_ELEMENT.fibonacciValue().toString())
+    }
+
 }
