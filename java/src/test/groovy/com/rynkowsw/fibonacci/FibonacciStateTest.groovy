@@ -31,7 +31,7 @@ class FibonacciStateTest extends Specification {
     def 'first fibonacci state current value is zero, and there is not defined previous value' () {
         given:
             FibonacciState fibonacciState = new FibonacciState()
-            FibonacciState nextState = fibonacciState.getNextFibonaciState()
+            FibonacciState nextState = fibonacciState.getNextFibonacciState()
         when:
             BigInteger value = nextState.fibonacciValue()
             BigInteger prevValue = nextState.previousFibonacciValue()
@@ -45,8 +45,8 @@ class FibonacciStateTest extends Specification {
         given:
             FibonacciState fibonacciState = new FibonacciState()
         when:
-            FibonacciState  firstState = fibonacciState.getNextFibonaciState()
-            FibonacciState  secondState = firstState.getNextFibonaciState()
+            FibonacciState  firstState = fibonacciState.getNextFibonacciState()
+            FibonacciState  secondState = firstState.getNextFibonacciState()
 
             BigInteger value = secondState.fibonacciValue()
             BigInteger prevValue = secondState.previousFibonacciValue()
@@ -69,7 +69,7 @@ class FibonacciStateTest extends Specification {
             }
             FibonacciState fibonacciState = new FibonacciState( prevValue, currentValue, calculator)
         when:
-            FibonacciState  newState = fibonacciState.getNextFibonaciState()
+            FibonacciState  newState = fibonacciState.getNextFibonacciState()
         then: 'the limit of calculating next big fibonacci number, is memory limitation in adding two BigIntegers'
             plannedSummOfPrevAndCurrentValue == newState.fibonacciValue()
     }
@@ -83,13 +83,9 @@ class FibonacciStateTest extends Specification {
             }
             FibonacciState fibonacciState = new FibonacciState(  ANY_BIGINTEAGER_VALUE, currentValue, calculator)
         when:
-            FibonacciState  state = fibonacciState.getNextFibonaciState()
+            FibonacciState  state = fibonacciState.getNextFibonacciState()
         then:
             currentValue == state.previousFibonacciValue()
     }
-
-
-    //
-
 
 }

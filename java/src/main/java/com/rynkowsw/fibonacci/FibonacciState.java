@@ -29,7 +29,7 @@ public class FibonacciState {
 
 
 
-    public FibonacciState getNextFibonaciState(){
+    public FibonacciState nextFibonacciState(){
 
         BigInteger  previousValue = newInstanceOfFibonacciValue(this.previousValue),
                     currentValue = newInstanceOfFibonacciValue(this.currentValue);

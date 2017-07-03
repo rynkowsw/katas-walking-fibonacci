@@ -25,7 +25,7 @@ public class FibonacciIterator implements Iterator<BigInteger> {
     public BigInteger next(){
 
         if(iteratorState != null ){
-            iteratorState =  ( iteratorState.getNextFibonaciState() ) ;
+            iteratorState =  ( iteratorState.getNextFibonacciState() ) ;
         }  else {
             iteratorState = FibonacciState.FIRST_ELEMENT;
         }

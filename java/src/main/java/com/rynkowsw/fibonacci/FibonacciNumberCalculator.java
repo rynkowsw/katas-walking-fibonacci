@@ -7,7 +7,7 @@ import java.math.BigInteger;
  */
 class FibonacciNumberCalculator {
 
-    protected BigInteger addTwoNumber(BigInteger number1, BigInteger number2 ){
+    public BigInteger addTwoNumber(BigInteger number1, BigInteger number2 ){
 
         BigInteger nextFibonacciValue = BigInteger.ZERO
                 .add(number1)

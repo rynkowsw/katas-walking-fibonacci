@@ -81,7 +81,7 @@ class FibonacciIteratorTest extends Specification {
         when:
             iteratorWithMocks.next()
         then:
-            1 * fibonacciInitialStateMock.getNextFibonaciState() >> fibonacciCalculatedStateMock
+            1 * fibonacciInitialStateMock.getNextFibonacciState() >> fibonacciCalculatedStateMock
             1 * fibonacciCalculatedStateMock.fibonacciValue()
     }
 
