@@ -7,6 +7,9 @@ import spock.lang.Specification
  */
 class FibonacciStateTest extends Specification {
 
+    BigInteger[] ANY_BIGINTEAGERS_VALUE = [new BigInteger("222222224422222"), new BigInteger("22211222222222222"), new BigInteger("222223322222222")]
+    BigInteger ANY_BIGINTEAGER_VALUE = new BigInteger("222222224422222")
+
     def 'initial fibonacci state has empty fibonacci value' () {
         given:
             FibonacciState fibonacciState = new FibonacciState()
@@ -25,7 +28,7 @@ class FibonacciStateTest extends Specification {
             value == null
     }
 
-    def 'first fibonacci value is zero, and there is not defined previous value in this state' () {
+    def 'first fibonacci state current value is zero, and there is not defined previous value' () {
         given:
             FibonacciState fibonacciState = new FibonacciState()
             FibonacciState nextState = fibonacciState.getNextFibonaciState()
@@ -38,7 +41,7 @@ class FibonacciStateTest extends Specification {
             null == prevValue
     }
 
-    def 'second fibonacci value is one, on this state previous fibonacci value is defined' () {
+    def 'second fibonacci state current value is one, on this state previous fibonacci value is defined as 0' () {
         given:
             FibonacciState fibonacciState = new FibonacciState()
         when:
@@ -53,26 +56,40 @@ class FibonacciStateTest extends Specification {
             (BigInteger.ZERO) == prevValue
     }
 
-    def 'third and next fibonacci values are sum of two previous one' () {
-        given: 'state with defined current and previous value, values are not mocked because of problem BigInteger mocking'
-            BigInteger currentValue = new BigInteger("101111111111")
-            BigInteger prevValue = new BigInteger("201111111111111111")
-            BigInteger plannedSummOfPrevAndCurrentValue = new BigInteger("30111111111111111111")
-        and:'Two BigInteger sum class, the limit of calculating next big fibonacci number, is memory limit of BigInteger.add function'
-            FibonacciNumberCalculator calculator = Mock(FibonacciNumberCalculator) {
-                addTwoNumber(_ as BigInteger, _ as BigInteger) >> plannedSummOfPrevAndCurrentValue
+    def 'third state and nexts fibonacci sates current values are sum of two previous one' () {
+        given: 'defined current and previous value, values are not mocked because of problem BigInteger mocking'
+            BigInteger currentValue = ANY_BIGINTEAGERS_VALUE[0]
+            BigInteger prevValue = ANY_BIGINTEAGERS_VALUE[1]
+        and:
+            BigInteger plannedSummOfPrevAndCurrentValue = ANY_BIGINTEAGERS_VALUE[2]
+        and: 'Class to add two BigIntegers'
 
+            FibonacciNumberCalculator calculator = Mock(FibonacciNumberCalculator) {
+                    addTwoNumber(_ as BigInteger, _ as BigInteger) >> plannedSummOfPrevAndCurrentValue
             }
             FibonacciState fibonacciState = new FibonacciState( prevValue, currentValue, calculator)
+        when:
+            FibonacciState  newState = fibonacciState.getNextFibonaciState()
+        then: 'the limit of calculating next big fibonacci number, is memory limitation in adding two BigIntegers'
+            plannedSummOfPrevAndCurrentValue == newState.fibonacciValue()
+    }
+
+    def 'third state and nexts fibonacci sates contain previous fibonacci value equal to current value of previous state'() {
+        given: 'defined current fibonacci value of previous state'
+            BigInteger currentValue = new BigInteger("101111111111")
+        and:
+            FibonacciNumberCalculator calculator = Mock(FibonacciNumberCalculator) {
+                addTwoNumber(_ as BigInteger, _ as BigInteger) >> ANY_BIGINTEAGER_VALUE
+            }
+            FibonacciState fibonacciState = new FibonacciState(  ANY_BIGINTEAGER_VALUE, currentValue, calculator)
         when:
             FibonacciState  state = fibonacciState.getNextFibonaciState()
         then:
             currentValue == state.previousFibonacciValue()
-        and:
-            plannedSummOfPrevAndCurrentValue == state.fibonacciValue()
     }
 
 
+    //
 
 
 }
